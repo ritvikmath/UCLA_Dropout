@@ -1,0 +1,20 @@
+---
+name: running_gpa
+deps: ID, alph_term, grade, course
+incl: False
+---
+name: first_major
+deps: major_list
+incl: False
+---
+name: major_list
+deps: MajorCode, Term
+incl: False
+---
+name: alph_term
+deps: Term
+incl: True
+---
+name: course_level
+deps: course
+incl: True
