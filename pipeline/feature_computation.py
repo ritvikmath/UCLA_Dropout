@@ -13,15 +13,19 @@ def area_feature(df):
 """
 
 def alph_term_feature(df):
-	return df.Term.apply(feature_helpers.get_sorted_term)
+	return df.Term.apply(feature_helpers.get_sortable_term)
 
 def running_gpa_feature(df):
 	gr_list = []
 	
 	for i,row in df.iterrows():
 		gr_list.append(np.mean(df[(df['ID'] == row.ID) & (df['alph_term'] < row.alph_term)]['grade']))
-		
+	
 	return gr_list
 		
 def course_level_feature(df):
 	return df.course.apply(feature_helpers.get_course_level)
+
+def math_units_feature(df):
+	print feature_helpers.get_math_units
+	return df.apply(feature_helpers.get_math_units, axis = 'columns')

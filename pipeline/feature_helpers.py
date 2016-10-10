@@ -5,16 +5,16 @@ This file contains helper functions for the feature computation
 functions in feature_computation.py
 """
 
-def get_sorted_term(term):
+def get_sortable_term(term):
 	n = term[:2]
 	t = term.strip('0123456789')
 	if t == 'W':
-		return n+'A'
+		return n+'.0'
 	elif t == 'S':
-		return n+'B'
+		return n+'.25'
 	elif t == 'F':
-		return n+'D'
-	return n+'C'
+		return n+'.75'
+	return n+'.5'
 	
 def get_course_level(course):
 	num = int(course.strip(' ABCDEFGHIJKLMNOPQRSTUVWXYZ'))
@@ -23,3 +23,10 @@ def get_course_level(course):
 	elif num < 200:
 		return 'UD'
 	return 'GR'
+
+def get_math_units(f):
+	if f['course'] == "115A":
+		return 5
+	if f['subject'] == "COMPTNG":
+		return 5
+	return 4

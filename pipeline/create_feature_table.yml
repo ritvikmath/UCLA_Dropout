@@ -18,3 +18,7 @@ incl: True
 name: course_level
 deps: course
 incl: True
+---
+name: math_units
+deps: subject, course
+incl: True
