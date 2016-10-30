@@ -1,15 +1,7 @@
 ---
 name: running_gpa
-deps: ID, alph_term, grade, course
-incl: False
----
-name: first_major
-deps: major_list
-incl: False
----
-name: major_list
-deps: MajorCode, Term
-incl: False
+deps: ID, alph_term, grade, course, terms_so_far
+incl: True
 ---
 name: alph_term
 deps: Term
@@ -21,4 +13,8 @@ incl: True
 ---
 name: math_units
 deps: subject, course
+incl: True
+---
+name: terms_so_far
+deps: ID, alph_term
 incl: True

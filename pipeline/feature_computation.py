@@ -16,16 +16,47 @@ def alph_term_feature(df):
 	return df.Term.apply(feature_helpers.get_sortable_term)
 
 def running_gpa_feature(df):
-	gr_list = []
+	dict_vals = {}
 	
-	for i,row in df.iterrows():
-		gr_list.append(np.mean(df[(df['ID'] == row.ID) & (df['alph_term'] < row.alph_term)]['grade']))
+	gr_sum = df.groupby(['ID','alph_term']).sum().grade
+	sub_df = df.groupby(['ID','alph_term']).count()
+	sub_df['sumgrade'] = gr_sum
 	
-	return gr_list
+	old_id = ''
+	gr_sum_running = 0
+	course_count_running = 0
+
+	count = 0
+	
+	for i,row in sub_df.iterrows():
+		if i[0] == old_id:
+			dict_vals[i] = gr_sum_running/course_count_running
+			gr_sum_running = gr_sum_running+row.sumgrade
+			course_count_running = course_count_running+row.grade
+		else:
+			gr_sum_running = row.sumgrade
+			course_count_running = row.grade
+			dict_vals[i] = -1
+			old_id = i[0]
+			
+	return df.apply(lambda x: dict_vals[(x.ID, x.alph_term)], axis='columns')
+		
 		
 def course_level_feature(df):
 	return df.course.apply(feature_helpers.get_course_level)
 
 def math_units_feature(df):
-	print feature_helpers.get_math_units
 	return df.apply(feature_helpers.get_math_units, axis = 'columns')
+	
+def terms_so_far_feature(df):
+	dict_index = {}
+	gb_id = df.groupby('ID')
+	for name,group in gb_id:
+		group = group.sort('alph_term')
+		gb_term = group.groupby('alph_term')
+		count = 0
+		for name2, group2 in gb_term:
+			dict_index[str(name)+str(name2)] = count
+			count+=1
+			
+	return df.apply(lambda x: dict_index[str(x.ID)+str(x.alph_term)], axis = 'columns')

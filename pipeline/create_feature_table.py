@@ -75,6 +75,7 @@ def create_feat_table(df):
 	#for each feature
 	for feat_dep in feats_deps:
 		#get the appropriate generation function
+		print "Adding ", feat_dep[0], " feature ... "
 		func = getattr(feature_computation, feat_dep[0]+'_feature')
 		#apply that function and add the resulting column to the dataframe
 		df[feat_dep[0]] = func(df[feat_dep[1]])

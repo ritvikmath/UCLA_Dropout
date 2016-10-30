@@ -9,12 +9,12 @@ def get_sortable_term(term):
 	n = term[:2]
 	t = term.strip('0123456789')
 	if t == 'W':
-		return n+'.0'
+		return float(n+'.0')
 	elif t == 'S':
-		return n+'.25'
+		return float(n+'.25')
 	elif t == 'F':
-		return n+'.75'
-	return n+'.5'
+		return float(n+'.75')
+	return float(n+'.5')
 	
 def get_course_level(course):
 	num = int(course.strip(' ABCDEFGHIJKLMNOPQRSTUVWXYZ'))
