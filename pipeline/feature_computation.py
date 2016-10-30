@@ -25,8 +25,6 @@ def running_gpa_feature(df):
 	old_id = ''
 	gr_sum_running = 0
 	course_count_running = 0
-
-	count = 0
 	
 	for i,row in sub_df.iterrows():
 		if i[0] == old_id:
@@ -36,6 +34,44 @@ def running_gpa_feature(df):
 		else:
 			gr_sum_running = row.sumgrade
 			course_count_running = row.grade
+			dict_vals[i] = -1
+			old_id = i[0]
+			
+	return df.apply(lambda x: dict_vals[(x.ID, x.alph_term)], axis='columns')
+	
+def gpa_last_quarter_feature(df):
+	dict_vals = {}
+	
+	sub_df = df.groupby(['ID','alph_term']).count()
+	
+	old_id = ''
+	gr_last = 0
+	
+	for i,row in sub_df.iterrows():
+		if i[0] == old_id:
+			dict_vals[i] = gr_last
+			gr_last = row.grade
+		else:
+			gr_last = row.grade
+			dict_vals[i] = -1
+			old_id = i[0]
+			
+	return df.apply(lambda x: dict_vals[(x.ID, x.alph_term)], axis='columns')
+	
+def last_quarter_feature(df):
+	dict_vals = {}
+	
+	sub_df = df.groupby(['ID','alph_term']).count()
+	
+	old_id = ''
+	term_last = ''
+	
+	for i,row in sub_df.iterrows():
+		if i[0] == old_id:
+			dict_vals[i] = term_last
+			term_last = i[1]
+		else:
+			term_last = i[1]
 			dict_vals[i] = -1
 			old_id = i[0]
 			
@@ -60,3 +96,31 @@ def terms_so_far_feature(df):
 			count+=1
 			
 	return df.apply(lambda x: dict_index[str(x.ID)+str(x.alph_term)], axis = 'columns')
+	
+def avg_rank_last_quarter_feature(df):
+	"""
+	not working yet!
+	"""
+	dict_stats = {}
+	gb_term_course = df.groupby(['alph_term','course'])
+	l = len(gb_term_course)
+	for name,group in gb_term_course:
+		mu = group.grade.mean()
+		stdev = group.grade.std()
+		group['rank'] = group.grade.apply(lambda x: (x-mu)/stdev if stdev != 0 else -1)
+		group['term'] = name[0]*len(group)
+		group['course'] = name[1]*len(group)
+		dict_stats = group.set_index(['ID','term','course'])['rank'].to_dict()
+		
+	
+	raise SystemExit
+			
+	
+	
+	
+	rk_list = []
+	for i,row in df.iterrows():
+		stats = dict_stats[(row.last_quarter, row.course)]
+		
+	
+	
