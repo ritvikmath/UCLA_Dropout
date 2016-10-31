@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import yaml
 import copy
+import datetime
 
 import feature_computation
 
@@ -72,14 +73,28 @@ def create_feat_table(df):
 	#get features to generate and their dependencies
 	feats_deps = get_feats_to_compute(df)
 	
+	timing = []
+	feats = []
+	
 	#for each feature
 	for feat_dep in feats_deps:
 		#get the appropriate generation function
 		print "Adding ", feat_dep[0], " feature ... "
+		bef = datetime.datetime.now()
 		func = getattr(feature_computation, feat_dep[0]+'_feature')
 		#apply that function and add the resulting column to the dataframe
 		df[feat_dep[0]] = func(df[feat_dep[1]])
+		aft = datetime.datetime.now()
+		timing.append(float((aft-bef).microseconds))
+		feats.append(feat_dep[0])
 	
+	tot_time = sum(timing)
+	pct_times = [i/tot_time*100 for i in timing]
+	
+	df_timing = pd.DataFrame()
+	df_timing['Feature'] = feats
+	df_timing['Pct Computation Time'] = pct_times
+	print df_timing
 	#generate feature table
 	df.to_csv('feature_table.csv')
 		

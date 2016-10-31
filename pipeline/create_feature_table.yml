@@ -1,7 +1,7 @@
 ---
 name: running_gpa
 deps: ID, alph_term, grade
-incl: False
+incl: True
 ---
 name: alph_term
 deps: Term
@@ -9,19 +9,19 @@ incl: True
 ---
 name: course_level
 deps: course
-incl: False
+incl: True
 ---
 name: math_units
 deps: subject, course
-incl: False
+incl: True
 ---
 name: terms_so_far
 deps: ID, alph_term
-incl: False
+incl: True
 ---
 name: gpa_last_quarter
 deps: ID, alph_term, grade
-incl: False
+incl: True
 ---
 name: avg_rank_last_quarter
 deps: ID, alph_term, grade, course, last_quarter
