@@ -29,4 +29,16 @@ incl: False
 ---
 name: last_quarter
 deps: ID, alph_term
+incl: False
+---
+name: previous_gpa
+deps: ID, alph_term, grade, math_units
+incl: False
+---
+name: recieved_A_plus
+deps: grade
+incl: True
+---
+name: actual_grade
+deps: grade
 incl: True

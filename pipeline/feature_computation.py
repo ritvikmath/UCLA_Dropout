@@ -78,6 +78,7 @@ def last_quarter_feature(df):
 	return df.apply(lambda x: dict_vals[(x.ID, x.alph_term)], axis='columns')
 		
 		
+		
 def course_level_feature(df):
 	return df.course.apply(feature_helpers.get_course_level)
 
@@ -114,13 +115,31 @@ def avg_rank_last_quarter_feature(df):
 		
 	
 	raise SystemExit
-			
-	
-	
 	
 	rk_list = []
 	for i,row in df.iterrows():
 		stats = dict_stats[(row.last_quarter, row.course)]
 		
-	
-	
+
+def actual_grade_feature(df):
+	return df.grade.apply(feature_helpers.get_actual_grade)
+
+def previous_gpa_feature(df):
+	for index, row in df.iterrows(): 
+
+		stop_term = float(row.alph_term) 
+		term_list = feature_helpers.get_term_list(df, row)
+
+		start_term, most_recent_term = feature_helpers.get_start_and_most_recent_term(stop_term, term_list)
+		term_and_grade = feature_helpers.get_terms_and_grades_dictionary(df, row, term_list)
+		
+		unit_sum, grades_times_units = feature_helpers.get_unit_sum_and_grades_times_units(most_recent_term, start_term, 
+																							term_and_grade, term_list)
+		average_previous_gpa = feature_helpers.get_average_previous_gpa(unit_sum, grades_times_units)
+
+	return average_previous_gpa
+
+def recieved_A_plus_feature(df):
+	return df.grade.apply(feature_helpers.get_boolean_A_plus)
+
+
