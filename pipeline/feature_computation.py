@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import feature_helpers
 import random
+from collections import defaultdict 
 
 """
 Add code for feature generation to this file
@@ -66,7 +67,7 @@ def last_quarter_feature(df):
 	
 	old_id = ''
 	term_last = ''
-	
+
 	for i,row in sub_df.iterrows():
 		if i[0] == old_id:
 			dict_vals[i] = term_last
@@ -74,8 +75,8 @@ def last_quarter_feature(df):
 		else:
 			term_last = i[1]
 			dict_vals[i] = -1
-			old_id = i[0]
-			
+			old_id = i[0]	
+	
 	return df.apply(lambda x: dict_vals[(x.ID, x.alph_term)], axis='columns')
 		
 		
@@ -126,19 +127,33 @@ def actual_grade_feature(df):
 	return df.grade.apply(feature_helpers.get_actual_grade)
 
 def previous_gpa_feature(df):
+	students = list(set(df['ID'].values.tolist()))
+
+	dct = defaultdict(list)
+	grades_dct = {}
+	for index, row in df.iterrows():
+		dct[row['ID'] + "-" + str(row['alph_term'])].append(row['grade'])
+
 	for index, row in df.iterrows(): 
+		previous_term = row['alph_term'] - 0.25
+		grades_list = []
+		count = 0 
 
-		stop_term = float(row.alph_term) 
-		term_list = feature_helpers.get_term_list(df, row)
+		while (count < 20): 
+			grades_list.extend(dct[row['ID'] + '-' + str(previous_term)])
+			count = count + 1
+			previous_term = previous_term - 0.25
 
-		start_term, most_recent_term = feature_helpers.get_start_and_most_recent_term(stop_term, term_list)
-		term_and_grade = feature_helpers.get_terms_and_grades_dictionary(df, row, term_list)
-		
-		unit_sum, grades_times_units = feature_helpers.get_unit_sum_and_grades_times_units(most_recent_term, start_term, 
-																							term_and_grade, term_list)
-		average_previous_gpa = feature_helpers.get_average_previous_gpa(unit_sum, grades_times_units)
+		grade_units = [grade * 4 for grade in grades_list]
+		if len(grade_units) > 0: 
+			previous_gpa = sum(grade_units)/float(len(grade_units)*4) 
+		else:
+			previous_gpa = 0 
 
-	return average_previous_gpa
+		grades_dct[(row['ID'], row['alph_term'])] = previous_gpa
+
+	return df.apply(lambda x: grades_dct[(x.ID, x.alph_term)], axis = 'columns')
+
 
 def recieved_A_plus_feature(df):
 	return df.grade.apply(feature_helpers.get_boolean_A_plus)
