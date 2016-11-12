@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import feature_helpers
+import random
 
 """
 Add code for feature generation to this file
@@ -141,5 +142,15 @@ def previous_gpa_feature(df):
 
 def recieved_A_plus_feature(df):
 	return df.grade.apply(feature_helpers.get_boolean_A_plus)
+	
+def dummy_label_feature(df):
+	dummy_list = []
+	for i in range(len(df)):
+		r = random.random()
+		if r <= 0.5:
+			dummy_list.append(0)
+		else:
+			dummy_list.append(1)
+	return dummy_list
 
 
