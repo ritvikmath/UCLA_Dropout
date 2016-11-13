@@ -4,6 +4,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 import pickle
 from sklearn.grid_search import ParameterGrid
+import os
 
 def run_models():
 	stream = open("machine_learning.yml", 'r')
@@ -21,7 +22,7 @@ def run_models():
 			elif k == 'prediction_var':
 				prediction_var = v
 			elif k == 'feats_to_use':
-				feats_to_use = v.split()
+				feats_to_use = v.replace(',','').split(' ')
 			elif k == 'feat_tbl_name':
 				feat_tbl_name = v
 			elif k == 'date_col':
@@ -47,10 +48,11 @@ def run_models():
 	for n in range(1, 2):
 		for index,clf in enumerate([clfs[x] for x in models_to_run]):
 			parameter_values = grid[models_to_run[index]]
-			filename = models_to_run[index]+'|'+str(parameter_values).replace(' ','').strip('{}').replace('\'','')
 			for p in ParameterGrid(parameter_values):
 				try:
-					filename = models_to_run[index]+'-'+str(p).replace(' ','').strip('{}').replace('\'','').replace(',','-').replace(':','_')
+					filename = models_to_run[index]+'-'+str(p).replace(' ','').strip('{}').replace('\'','').replace(',','-').replace(':','_')+'-'+'+'.join(feats_to_use)
+					if os.path.isfile('../model_output/filename'+'.p'):
+						continue
 					print clf
 					clf.set_params(**p)
 					y_pred_probs = clf.fit(X_train, y_train).predict_proba(X_test)[:,1]
@@ -61,6 +63,8 @@ def run_models():
 				except IndexError, e:
 					print 'Error:',e
 					continue
+					
+	open('generate_predictions.s', 'w+')
 	
 	
 def gen_train_test_split(feat_tbl_name, train_start_year, num_train_years, num_test_years, date_col, train_tbl_name, test_tbl_name):

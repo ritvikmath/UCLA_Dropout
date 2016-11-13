@@ -2,47 +2,54 @@
 name: running_gpa
 deps: ID, alph_term, grade
 incl: True
+coll: True
 ---
 name: alph_term
 deps: Term
 incl: True
+coll: True
 ---
 name: course_level
 deps: course
 incl: True
+coll: False
 ---
 name: math_units
 deps: subject, course
 incl: True
+coll: False
 ---
 name: terms_so_far
 deps: ID, alph_term
 incl: True
+coll: True
 ---
 name: gpa_last_quarter
 deps: ID, alph_term, grade
-incl: True
+incl: False
+coll: True
 ---
 name: avg_rank_last_quarter
 deps: ID, alph_term, grade, course, last_quarter
 incl: False
+coll: True
 ---
 name: last_quarter
 deps: ID, alph_term
 incl: False
+coll: True
 ---
 name: previous_gpa
 deps: ID, alph_term, grade, math_units
 incl: False
+coll: True
 ---
 name: recieved_A_plus
 deps: grade
 incl: True
+coll: False
 ---
 name: actual_grade
 deps: grade
 incl: True
----
-name: dummy_label
-deps: ID
-incl: True
+coll: False

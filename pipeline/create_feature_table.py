@@ -19,6 +19,9 @@ def get_feats_to_compute(df):
 	
 	#include only those with incl:True flag set
 	to_add = []
+	
+	#collect the features which are dimensionally reduced
+	not_in_final_feats = []
 
 	#features native to the dataframe
 	generated_feats = [i for i in df.columns]
@@ -35,14 +38,18 @@ def get_feats_to_compute(df):
 			if k == 'name':
 				continue;
 			#store all feature information (dependencies, include or not) in dictionary
-			if k == 'deps':
+			elif k == 'deps':
 				feature_list[doc['name']][k] = v.replace(' ','').split(',')
+			elif k == 'coll':
+				feature_list[doc['name']][k] = v
 			else:
 				feature_list[doc['name']][k] = v
 	#get features to add
 	for k,v in feature_list.items():
 		if v['incl'] == True:
 			to_add.append(k)
+			if v['coll'] == False:
+				not_in_final_feats.append(k)
 			
 	#keep looping as long as we have not accounted for all features
 	tgt_len = len(queue) + len(to_add)		
@@ -62,7 +69,7 @@ def get_feats_to_compute(df):
 	deps_to_apply = [feature_list[i]['deps'] for i in feats_to_compute]
 
 	#return zipped list
-	return zip(feats_to_compute, deps_to_apply)
+	return [zip(feats_to_compute, deps_to_apply), not_in_final_feats]
 
 def create_feat_table(df):
 	"""
@@ -71,7 +78,9 @@ def create_feat_table(df):
 	"""
 
 	#get features to generate and their dependencies
-	feats_deps = get_feats_to_compute(df)
+	r_val = get_feats_to_compute(df)
+	feats_deps = r_val[0]
+
 	
 	timing = []
 	feats = []
@@ -94,9 +103,27 @@ def create_feat_table(df):
 	df_timing = pd.DataFrame()
 	df_timing['Feature'] = feats
 	df_timing['Pct Computation Time'] = pct_times
+	print "---------------"
 	print df_timing
+	print "---------------"
+	
+	toRemove = r_val[1]
+	toRemove+=['course','subject','grade']
+	df = create_reduced_feature_table(df, 'shortKey', toRemove)
 	#generate feature table
 	df.to_csv('feature_table.csv')
+	
+def create_reduced_feature_table(df, reduceOn, removeLabels):
+	for item in df.columns:
+		if 'Unnamed' in item:
+			removeLabels.append(item)
+			
+	df_reduce = df.groupby(reduceOn).first()
+	df_reduce = df_reduce.drop(removeLabels,1)
+	
+	return df_reduce
+	
+
 		
 		
 		
