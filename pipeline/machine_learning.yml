@@ -7,4 +7,4 @@ date_col: alph_term
 prediction_var: graduation_status
 feats_to_use: running_gpa
 train_tbl_name: train_table.csv
-test_tbl_name: test_tbl.csv
+test_tbl_name: test_table.csv
