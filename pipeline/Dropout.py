@@ -41,7 +41,7 @@ else:
 	print "---------------"
 #################################################
 
-#############CREATE FEATURE TABLE################
+#############CREATE LABELED FEATURE TABLE################
 if (proceed == True) or (os.path.isfile('./attach_labels.s') == False) or (os.path.getmtime('./attach_labels.s') < os.path.getmtime('./create_feature_table.yml')):
 	print "Attaching Labels"
 	print "---------------"
