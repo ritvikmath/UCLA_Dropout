@@ -44,7 +44,7 @@ def running_gpa_feature(df):
 def gpa_last_quarter_feature(df):
 	dict_vals = {}
 	
-	sub_df = df.groupby(['ID','alph_term']).count()
+	sub_df = df.groupby(['ID','alph_term']).mean()
 	
 	old_id = ''
 	gr_last = 0

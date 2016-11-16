@@ -26,7 +26,7 @@ coll: True
 ---
 name: gpa_last_quarter
 deps: ID, alph_term, grade
-incl: False
+incl: True
 coll: True
 ---
 name: avg_rank_last_quarter
@@ -36,7 +36,7 @@ coll: True
 ---
 name: last_quarter
 deps: ID, alph_term
-incl: False
+incl: True
 coll: True
 ---
 name: previous_gpa

@@ -1,10 +1,10 @@
 train_start_year: 2000
 num_train_years: 10
-num_test_years: 5
-models_to_run: LR RF
+num_test_years: 3
+models_to_run: RF
 feat_tbl_name: feature_table.csv
 date_col: alph_term
-prediction_var: graduation_status
-feats_to_use: running_gpa
+prediction_var: drops_out_in_next_year
+feats_to_use: running_gpa, gpa_last_quarter, terms_so_far
 train_tbl_name: train_table.csv
 test_tbl_name: test_table.csv

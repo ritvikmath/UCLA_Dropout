@@ -82,7 +82,7 @@ def define_clfs_params():
 	}
 
 	grid = { 
-	'RF':{'n_estimators': [10,100], 'max_depth': [10,20], 'max_features': ['sqrt','log2'],'min_samples_split': [2,5]},
+	'RF':{'n_estimators': [10,100], 'max_depth': [10], 'max_features': ['sqrt','log2'],'min_samples_split': [5]},
 	'LR': { 'penalty': ['l1','l2'], 'C': [.01,.1,1,10]},
 	}
 	
