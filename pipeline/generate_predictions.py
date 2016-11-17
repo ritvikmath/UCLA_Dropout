@@ -37,8 +37,15 @@ def run_models():
 	train_df = pd.read_csv(train_tbl_name)
 	test_df = pd.read_csv(test_tbl_name)
 	
-	X_train = train_df[feats_to_use]
-	X_test = test_df[feats_to_use]
+	full_feats = []
+	for feat in feats_to_use:
+		for col in train_df.columns:
+			if feat in col:
+				full_feats.append(col)
+	full_feats = list(set(full_feats))
+	
+	X_train = train_df[full_feats]
+	X_test = test_df[full_feats]
 	
 	y_train = train_df[prediction_var]
 	y_test = test_df[prediction_var]
@@ -51,9 +58,10 @@ def run_models():
 			for p in ParameterGrid(parameter_values):
 				try:
 					filename = models_to_run[index]+'-'+str(p).replace(' ','').strip('{}').replace('\'','').replace(',','-').replace(':','_')+'-'+'+'.join(feats_to_use)
-					if os.path.isfile('../model_output/filename'+'.p'):
+					if os.path.isfile("../model_output/"+filename+".p"):
 						continue
 					print clf
+					print "---------------"
 					clf.set_params(**p)
 					y_pred_probs = clf.fit(X_train, y_train).predict_proba(X_test)[:,1]
 					result = pd.DataFrame()

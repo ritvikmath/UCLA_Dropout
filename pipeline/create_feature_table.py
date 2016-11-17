@@ -22,6 +22,9 @@ def get_feats_to_compute(df):
 	
 	#collect the features which are dimensionally reduced
 	not_in_final_feats = []
+	
+	#collect the categorical vars for binarizaiton 
+	cat_vars = []
 
 	#features native to the dataframe
 	generated_feats = [i for i in df.columns]
@@ -42,6 +45,8 @@ def get_feats_to_compute(df):
 				feature_list[doc['name']][k] = v.replace(' ','').split(',')
 			elif k == 'coll':
 				feature_list[doc['name']][k] = v
+			elif k == 'type':
+				feature_list[doc['name']][k] = v
 			else:
 				feature_list[doc['name']][k] = v
 	#get features to add
@@ -50,6 +55,8 @@ def get_feats_to_compute(df):
 			to_add.append(k)
 			if v['coll'] == False:
 				not_in_final_feats.append(k)
+			else:
+				cat_vars.append(k)
 			
 	#keep looping as long as we have not accounted for all features
 	tgt_len = len(queue) + len(to_add)		
@@ -69,7 +76,7 @@ def get_feats_to_compute(df):
 	deps_to_apply = [feature_list[i]['deps'] for i in feats_to_compute]
 
 	#return zipped list
-	return [zip(feats_to_compute, deps_to_apply), not_in_final_feats]
+	return [zip(feats_to_compute, deps_to_apply), not_in_final_feats, cat_vars]
 
 def create_feat_table(df):
 	"""
@@ -108,8 +115,10 @@ def create_feat_table(df):
 	print "---------------"
 	
 	toRemove = r_val[1]
+	cat_vars = r_val[2]
 	toRemove+=['course','subject','grade']
 	df = create_reduced_feature_table(df, 'shortKey', toRemove)
+	#df = binarize_categorical_vars(df, cat_vars)
 	#generate feature table
 	df.to_csv('feature_table.csv')
 	
@@ -123,6 +132,14 @@ def create_reduced_feature_table(df, reduceOn, removeLabels):
 	
 	return df_reduce
 	
+def binarize_categorical_vars(df, cat_vars):
+	for var in cat_vars:
+		df_temp = pd.get_dummies(df[var], prefix = var+'_is')
+		df = pd.concat([df, df_temp], axis=1)
+		if var != 'alph_term':
+			print "here!"
+			df = df.drop(var, 1)
+	return df
 
 		
 		

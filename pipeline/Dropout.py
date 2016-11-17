@@ -5,10 +5,21 @@ import pandas as pd
 from create_unique_key import make_unique_key
 import generate_predictions
 import os
+import sys
 
 """
 This is the top level function which calls all others.
 """
+
+if len(sys.argv) > 1 and sys.argv[1] == 'clean':
+	for fn in os.listdir('./'):
+		if 'csv' in fn and fn != 'cleaned_student_data.csv' and fn != 'extra_data.csv':
+			os.remove(fn)
+		if '.s' in fn:
+			os.remove(fn)
+		if '.yml' in fn:
+			os.utime(fn, None)
+	raise SystemExit
 
 proceed = False
 
@@ -65,7 +76,6 @@ else:
 
 #############CREATE EVALUATION OUTPUT############
 if (proceed == True) or (os.path.isfile('./model_scores.csv') == False) or (os.path.getmtime('./evaluation.yml') > os.path.getmtime('./model_scores.csv')):
-	print "---------------"
 	print "Running Model Evaluation"
 	print "---------------"
 	evaluation.eval_models()
