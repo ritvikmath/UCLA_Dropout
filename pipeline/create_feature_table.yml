@@ -51,7 +51,7 @@ name: previous_gpa
 deps: ID, alph_term, grade, math_units
 incl: False
 coll: True
-tyep: cts 
+type: cts 
 ---
 name: recieved_A_plus
 deps: grade
