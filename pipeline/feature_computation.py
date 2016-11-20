@@ -3,6 +3,7 @@ import numpy as np
 import feature_helpers
 import random
 from collections import defaultdict 
+from scipy.stats import rankdata
 
 """
 Add code for feature generation to this file
@@ -158,5 +159,35 @@ def previous_gpa_feature(df):
 def recieved_A_plus_feature(df):
 	return df.grade.apply(feature_helpers.get_boolean_A_plus)
 	
+def quarter_count_feature(df): 
+	groups = df.groupby('ID')
+	dct = defaultdict(list)
+	for name, group in groups: 
+		dct[group['ID'].values.tolist()[0]] = dict(zip(group['alph_term'].values.tolist(), rankdata(group['alph_term'].values.tolist(), method = 'dense')))
+
+	return df.apply(lambda x: dct[x.ID][x.alph_term], axis = 'columns')
+
+def is_female_feature(df):
+	return df.Gender.apply(feature_helpers.get_boolean_female)
+
+def is_male_feature(df):
+	return df.Gender.apply(feature_helpers.get_boolean_male)
+
+def number_courses_so_far_feature(df):
+	"""
+	not working yet
+	"""
+	groups = df.groupby('ID')
+	dct = defaultdict(list)
+
+	for name, group in groups: 
+		alph_terms = list(set(group['alph_term'].values.tolist()))
+		alph_terms.sort()
+		count = 0
+		for index, value in enumerate(alph_terms):
+			term_group = group[group['alph_term'] == value]
+			count = count + len(term_group['course'].values.tolist())
+
+			dct[group['ID'].values.tolist()[0]] = dict(zip(str(value), str(count)))
 
 

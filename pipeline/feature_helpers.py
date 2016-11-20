@@ -36,6 +36,16 @@ def get_boolean_A_plus(grade):
 		return 1
 	return 0
 
+def get_boolean_female(gender):
+	if str(gender) == 'F':
+		return 1
+	return 0 
+
+def get_boolean_male(gender):
+	if str(gender) == 'M':
+		return 1
+	return 0 
+
 def get_actual_grade(grade):
 	if float(grade) == 4.3:
 		return 4
