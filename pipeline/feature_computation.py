@@ -167,27 +167,22 @@ def quarter_count_feature(df):
 
 	return df.apply(lambda x: dct[x.ID][x.alph_term], axis = 'columns')
 
-def is_female_feature(df):
-	return df.Gender.apply(feature_helpers.get_boolean_female)
-
 def is_male_feature(df):
 	return df.Gender.apply(feature_helpers.get_boolean_male)
 
+
 def number_courses_so_far_feature(df):
-	"""
-	not working yet
-	"""
+	"""We could do the max data rank thing tomorrow"""
 	groups = df.groupby('ID')
 	dct = defaultdict(list)
-
 	for name, group in groups: 
-		alph_terms = list(set(group['alph_term'].values.tolist()))
-		alph_terms.sort()
-		count = 0
-		for index, value in enumerate(alph_terms):
-			term_group = group[group['alph_term'] == value]
-			count = count + len(term_group['course'].values.tolist())
+			
+		terms = group['alph_term'].values.tolist()
+		count_list = []
 
-			dct[group['ID'].values.tolist()[0]] = dict(zip(str(value), str(count)))
+		for index, term in enumerate(terms):
+			count_list.append(terms.count(term))
 
+		dct[group['ID'].values.tolist()[0]] = dict(zip(terms, rankdata(terms, method = 'max')))
 
+	return df.apply(lambda x: dct[x.ID][x.alph_term], axis = 'columns')
