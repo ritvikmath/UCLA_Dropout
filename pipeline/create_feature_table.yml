@@ -71,12 +71,6 @@ incl: True
 coll: True
 type: cat 
 ---
-name: is_female
-deps: Gender
-incl: True
-coll: True
-type: cat
----
 name: is_male 
 deps: Gender
 incl: True
@@ -84,7 +78,7 @@ coll: True
 type: cat
 ---
 name: number_courses_so_far
-deps: course, ID, alph_term
-incl: False
-coll: False
-type: cts
+deps: course, ID, alph_term, Term
+incl: True
+coll: True
+type: cat
