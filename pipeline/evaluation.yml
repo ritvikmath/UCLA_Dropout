@@ -3,3 +3,4 @@ true_neg_reward: 1
 false_pos_penalty: -1
 false_neg_penalty: -1
 k: 25
+pics: True

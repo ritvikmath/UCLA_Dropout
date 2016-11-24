@@ -118,7 +118,6 @@ def create_feat_table(df):
 	cat_vars = r_val[2]
 	toRemove+=['course','subject','grade']
 	df = create_reduced_feature_table(df, 'shortKey', toRemove)
-	#df = binarize_categorical_vars(df, cat_vars)
 	#generate feature table
 	df.to_csv('feature_table.csv')
 	
@@ -131,15 +130,6 @@ def create_reduced_feature_table(df, reduceOn, removeLabels):
 	df_reduce = df_reduce.drop(removeLabels,1)
 	
 	return df_reduce
-	
-def binarize_categorical_vars(df, cat_vars):
-	for var in cat_vars:
-		df_temp = pd.get_dummies(df[var], prefix = var+'_is')
-		df = pd.concat([df, df_temp], axis=1)
-		if var != 'alph_term':
-			print "here!"
-			df = df.drop(var, 1)
-	return df
 
 		
 		

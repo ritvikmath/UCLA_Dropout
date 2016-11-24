@@ -3,6 +3,61 @@ import os
 import yaml
 import numpy as np
 import pickle
+import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
+import datetime
+
+def pr_at_k(k, result_df):
+	thresh = np.percentile(result_df.score, 100-k)
+			
+	result_df['pred_val'] = result_df.score.apply(lambda x: 1 if x > thresh else 0)
+	
+	true_pos = float(len(result_df[(result_df.pred_val == 1)&(result_df.true_val==1)]))
+	false_pos = len(result_df[(result_df.pred_val == 1)&(result_df.true_val==0)])
+	false_neg = len(result_df[(result_df.pred_val == 0)&(result_df.true_val==1)])
+	
+	if true_pos+false_pos != 0:
+		prec = true_pos/(true_pos+false_pos)
+	else:
+		prec = -1
+		
+	rec = true_pos/(true_pos+false_neg)
+	
+	return(prec ,rec)
+	
+def score_at_k(k, result_df, cost_mtx):
+	thresh = np.percentile(result_df.score, 100-k)
+	result_df['pred_val'] = result_df.score.apply(lambda x: 1 if x > thresh else 0)
+	result_df['contribution'] = result_df.apply(lambda x: cost_mtx[str([int(x.pred_val), int(x.true_val)])], axis = 'columns')
+	tot_score = result_df.contribution.mean()
+	return tot_score
+	
+
+	
+def plot_pr_curve(result_df, fn):
+	p_list = []
+	r_list = []
+	
+	l = range(1,101)
+	fig, ax1 = plt.subplots()
+	ax2 = ax1.twinx()
+	
+	for k in l:
+		pr = pr_at_k(k, result_df)
+		
+		p_list.append(pr[0])
+		r_list.append(pr[1])
+	
+	ax1.plot(l, p_list, color = 'blue', linewidth=1.5)
+	ax1.plot(l, r_list, color = 'red', linewidth=1.5)
+	ax1.set_title(fn)
+	
+	red_patch = mpatches.Patch(color='red', label='recall')
+	blue_patch = mpatches.Patch(color='blue', label='precision')
+	ax1.legend(handles=[red_patch, blue_patch], loc=4)
+
+	plt.savefig('../model_plots/'+fn+'.png')
+	plt.close()
 
 def eval_models():
 
@@ -20,6 +75,8 @@ def eval_models():
 				false_pos_penalty = v
 			elif key == 'false_neg_penalty':
 				false_neg_penalty = v
+			elif key == 'pics':
+				pic_status = v
 				
 	if os.path.isfile('./model_scores.csv'):
 		model_scores_df = pd.read_csv('./model_scores.csv')
@@ -40,24 +97,28 @@ def eval_models():
 		if (os.path.isfile('../model_output/tracker.s') == False) or (os.path.isfile('../model_output/tracker.s') == True and os.path.getmtime('../model_output/'+fn) > os.path.getmtime('../model_output/tracker.s')):
 			print fn
 			filenames.append(fn)
-			result_df = pickle.load(open('../model_output/'+fn, "rb"))
-			thresh = np.percentile(result_df.score, 100-k)
+			result_df_tup = pickle.load(open('../model_output/'+fn, "rb"))
+			result_df = result_df_tup[0]
+			top_3_feats = result_df_tup[1]
 			
-			result_df['pred_val'] = result_df.score.apply(lambda x: 1 if x > thresh else 0)
-			result_df['contribution'] = result_df.apply(lambda x: cost_mtx[str([int(x.pred_val), int(x.true_val)])], axis = 'columns')
-			result_df['correct'] = result_df.apply(lambda x: int(x.pred_val == x.true_val), axis = 'columns')
-			tot_score = result_df.contribution.mean()
 			
-			ones_df = result_df[result_df.true_val == 1]
-			
-			temp_df = pd.DataFrame(columns = ['model','score','recall_at_'+str(k),'precision_at_'+str(k)])
+			temp_df = pd.DataFrame(columns = ['model','timestamp','score','recall_at_'+str(k),'precision_at_'+str(k), 'top 3 feats'])
 			temp_df.model = [fn]
-			temp_df.score = [tot_score]
-			temp_df['precision_at_'+str(k)] = [result_df.correct.sum()/float(len(result_df))]
-			temp_df['recall_at_'+str(k)] = [ones_df.correct.sum()/float(len(ones_df))]
+			
+			pr = pr_at_k(k, result_df)
+			s = score_at_k(k, result_df, cost_mtx)
+			
+			temp_df.score = [s]
+			temp_df['precision_at_'+str(k)] = [pr[0]]
+			temp_df['recall_at_'+str(k)] = [pr[1]]
+			temp_df['timestamp'] = [datetime.datetime.now()]
+			temp_df['top_3_feats'] = [top_3_feats]
 			
 			model_scores_df = model_scores_df.append(temp_df, ignore_index = True)
 			model_scores_df.to_csv('model_scores.csv')
+			
+			if(pic_status):
+				plot_pr_curve(result_df, fn[:-2])
 			
 	if os.path.isfile('../model_output/tracker.s') == False:
 		open('../model_output/tracker.s', 'w+')
