@@ -3,6 +3,7 @@ import numpy as np
 import yaml
 import copy
 import datetime
+from sklearn import preprocessing
 
 import feature_computation
 
@@ -118,6 +119,7 @@ def create_feat_table(df):
 	cat_vars = r_val[2]
 	toRemove+=['course','subject','grade']
 	df = create_reduced_feature_table(df, 'shortKey', toRemove)
+	df_new = normalize_data(df, r_val)
 	#generate feature table
 	df.to_csv('feature_table.csv')
 	
@@ -131,9 +133,14 @@ def create_reduced_feature_table(df, reduceOn, removeLabels):
 	
 	return df_reduce
 
-		
-		
-		
-	
-	
+def normalize_data(df, r_val):
+	"""Have a question about normalizing some features"""
+	print r_val[1]
+	feature_names = []
+	for feat_dep in r_val[0]:
+		if feat_dep[0] not in r_val[1]:
+			feature_names.append(feat_dep[0])
+
+	df[feature_names] = df[feature_names].apply(lambda x: (x - x.mean())/ (x.max() - x.min()))
+	return df 
 	
