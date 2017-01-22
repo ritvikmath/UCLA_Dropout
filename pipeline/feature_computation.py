@@ -123,6 +123,20 @@ def avg_rank_last_quarter_feature(df):
 	for i,row in df.iterrows():
 		stats = dict_stats[(row.last_quarter, row.course)]
 		
+def units_so_far_feature(df):
+	#zip alph_term with their courses
+	gb_id = df.groupby('ID')
+	dct_term_units = {}
+
+	for name, group in gb_id:
+		terms = group['alph_term'].values.tolist()
+		for index, term in enumerate(terms):
+			course_list = group[group['alph_term'] < term]['course'].values.tolist()
+			#For simplification, I count 115a as a 4 unit course
+			dct_term_units[str(group['ID'].values.tolist()[0])+str(term)] = len(course_list)*4
+
+	return df.apply(lambda x: dct_term_units[str(x.ID)+str(x.alph_term)], axis = 'columns')
+	
 
 def actual_grade_feature(df):
 	return df.grade.apply(feature_helpers.get_actual_grade)
@@ -171,18 +185,3 @@ def is_male_feature(df):
 	return df.Gender.apply(feature_helpers.get_boolean_male)
 
 
-def number_courses_so_far_feature(df):
-	"""We could do the max data rank thing tomorrow"""
-	groups = df.groupby('ID')
-	dct = defaultdict(list)
-	for name, group in groups: 
-			
-		terms = group['alph_term'].values.tolist()
-		count_list = []
-
-		for index, term in enumerate(terms):
-			count_list.append(terms.count(term))
-
-		dct[group['ID'].values.tolist()[0]] = dict(zip(terms, rankdata(terms, method = 'max')))
-
-	return df.apply(lambda x: dct[x.ID][x.alph_term], axis = 'columns')

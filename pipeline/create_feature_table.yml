@@ -61,7 +61,7 @@ type: cat
 ---
 name: actual_grade
 deps: grade
-incl: True
+incl: False
 coll: False
 type: cts 
 ---
@@ -69,7 +69,7 @@ name: quarter_count
 deps: ID, alph_term
 incl: True
 coll: True
-type: cat 
+type: cts 
 ---
 name: is_male 
 deps: Gender
@@ -77,8 +77,8 @@ incl: True
 coll: True
 type: cat
 ---
-name: number_courses_so_far
-deps: course, ID, alph_term, Term
+name: units_so_far
+deps: course, ID, alph_term
 incl: True
 coll: True
 type: cat
