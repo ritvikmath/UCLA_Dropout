@@ -41,6 +41,7 @@ def plot_pr_curve(result_df, fn):
 	l = range(1,101)
 	fig, ax1 = plt.subplots()
 	ax2 = ax1.twinx()
+	ax1.set_ylim(0,1)
 	
 	for k in l:
 		pr = pr_at_k(k, result_df)
@@ -48,13 +49,13 @@ def plot_pr_curve(result_df, fn):
 		p_list.append(pr[0])
 		r_list.append(pr[1])
 	
-	ax1.plot(l, p_list, color = 'blue', linewidth=1.5)
-	ax1.plot(l, r_list, color = 'red', linewidth=1.5)
-	ax1.set_title(fn)
+	ax1.plot(l, p_list, 'blue', linewidth=1.5, label = 'precision')
+	ax1.plot(l, r_list, 'r--', linewidth=1.5, label = 'recall')
+	ax1.set_xlabel('Percent Threshold (k)')
 	
-	red_patch = mpatches.Patch(color='red', label='recall')
-	blue_patch = mpatches.Patch(color='blue', label='precision')
-	ax1.legend(handles=[red_patch, blue_patch], loc=4)
+	#red_patch = mpatches.Patch(color='r--', label='recall')
+	#blue_patch = mpatches.Patch(color='blue', label='precision')
+	ax1.legend(loc=4)
 
 	plt.savefig('../model_plots/'+fn+'.png')
 	plt.close()

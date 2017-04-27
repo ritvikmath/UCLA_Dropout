@@ -1,10 +1,10 @@
 train_start_year: 2000
 num_train_years: 10
 num_test_years: 3
-models_to_run: LR KNN RF ET GB AB
+models_to_run: KNN
 feat_tbl_name: feature_table.csv
-date_col: alph_term
+date_col: Term
 prediction_var: drops_out_in_next_year
-feats_to_use: gpa_last_quarter, running_gpa, terms_so_far, is_male, quarter_count
+feats_to_use: running_gpa, terms_so_far, is_male, quarter_count
 train_tbl_name: train_table.csv
 test_tbl_name: test_table.csv

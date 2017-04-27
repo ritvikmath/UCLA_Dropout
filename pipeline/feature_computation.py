@@ -16,7 +16,7 @@ def area_feature(df):
 """
 
 def alph_term_feature(df):
-	return df.Term.apply(feature_helpers.get_sortable_term)
+	return df.Term
 
 def running_gpa_feature(df):
 	dict_vals = {}

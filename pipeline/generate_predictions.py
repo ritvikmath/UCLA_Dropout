@@ -141,12 +141,12 @@ def define_clfs_params():
 	}
 
 	grid = { 
-	'RF':{'n_estimators': [10,100,1000], 'max_depth': [2,5,10,20,50], 'max_features': ['sqrt','log2'],'min_samples_split': [5,10]},
-	'LR': { 'penalty': ['l1','l2'], 'C': [.001,.01,.1,1,10,100]},
+	'RF':{'n_estimators': [10,100,1000], 'max_depth': [2,5], 'max_features': ['sqrt','log2'],'min_samples_split': [2,5,10]},
+	'LR': { 'penalty': ['l1','l2'], 'C': [.1,1,10]},
 	'GB': {'n_estimators': [10,100], 'learning_rate' : [0.01,0.05],'subsample' : [0.1,0.5], 'max_depth': [10,50]},
 	'ET': { 'n_estimators': [10,100], 'criterion' : ['gini', 'entropy'] ,'max_depth': [10,20,50, 100], 'max_features': ['sqrt','log2'],'min_samples_split': [2,5,10]},
-	'KNN' :{'n_neighbors': [1,5,10,50,100,500],'weights': ['uniform','distance'],'algorithm': ['auto','ball_tree','kd_tree']},
-	'AB': { 'algorithm': ['SAMME','SAMME.R'], 'n_estimators': [1,10,100]}
+	'KNN' :{'n_neighbors': [50,100,200],'weights': ['uniform','distance'],'algorithm': ['auto','ball_tree','kd_tree']},
+	'AB': { 'algorithm': ['SAMME','SAMME.R'], 'n_estimators': [1,10,100,1000,10000]}
 	}
 	
 	return clfs, grid

@@ -31,7 +31,7 @@ type: cts
 ---
 name: gpa_last_quarter
 deps: ID, alph_term, grade
-incl: True
+incl: False
 coll: True
 type: cts 
 ---
@@ -55,7 +55,7 @@ type: cts
 ---
 name: recieved_A_plus
 deps: grade
-incl: True
+incl: False
 coll: False
 type: cat 
 ---
@@ -79,6 +79,6 @@ type: cat
 ---
 name: units_so_far
 deps: course, ID, alph_term
-incl: True
+incl: False
 coll: True
 type: cat

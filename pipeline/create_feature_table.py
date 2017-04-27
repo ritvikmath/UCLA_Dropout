@@ -119,7 +119,13 @@ def create_feat_table(df):
 	cat_vars = r_val[2]
 	toRemove+=['course','subject','grade']
 	df = create_reduced_feature_table(df, 'shortKey', toRemove)
-	df_new = normalize_data(df, r_val)
+	
+	rgpa_pure = list(df.running_gpa)
+	
+	normalize_data(df, r_val)
+	
+	df['rgpa_pure'] = rgpa_pure
+	
 	#generate feature table
 	df.to_csv('feature_table.csv')
 	
@@ -142,5 +148,4 @@ def normalize_data(df, r_val):
 			feature_names.append(feat_dep[0])
 
 	df[feature_names] = df[feature_names].apply(lambda x: (x - x.mean())/ (x.max() - x.min()))
-	return df 
 	

@@ -13,7 +13,7 @@ This is the top level function which calls all others.
 
 if len(sys.argv) > 1 and sys.argv[1] == 'clean':
 	for fn in os.listdir('./'):
-		if 'csv' in fn and fn != 'cleaned_student_data.csv' and fn != 'extra_data.csv':
+		if 'csv' in fn and fn != 'cleaned_student_data.csv' and fn != 'extra_data.csv' and fn != 'cleaned_joined_table.csv':
 			os.remove(fn)
 		if '.s' in fn:
 			os.remove(fn)
@@ -23,7 +23,7 @@ if len(sys.argv) > 1 and sys.argv[1] == 'clean':
 
 proceed = False
 
-df = pd.read_csv('cleaned_student_data.csv')
+df = pd.read_csv('cleaned_joined_table.csv')
 
 #############CREATE UNIQUE KEY TABLE#############
 if (proceed == True) or (not os.path.isfile('./uniq_key_student_data.csv')):
