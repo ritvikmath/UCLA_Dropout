@@ -47,12 +47,14 @@ full_df = full_df[full_df.course.apply(lambda x: x.strip(' ABCDEFGHIJKLMNOPQRSTU
 full_df.Graduated = full_df.Graduated.apply(lambda x: 0 if str(x)=='nan' else x)
 
 acceptable_majors = ['72', '6Q', '8D', '8E', '540', '737', 'G', '6P', '536', '6R', '545', '6S', '54B', '778', '6T']
-acceptable_admits = ['UFR', 'USO']
+# acceptable_admits = ['UFR', 'USO']
+major_focus = ['72', '540']
 full_df = full_df[full_df.AdmitMajor.isin(acceptable_majors)]
-full_df = full_df[full_df.AdmitClass.isin(acceptable_admits)]
+# full_df = full_df[full_df.AdmitClass.isin(acceptable_admits)]
+full_df = full_df[full_df.AdmitMajor.isin(major_focus)]
 
 
 
 full_df.to_csv('cleaned_joined_table.csv')
 
-full_df.to_csv('../UCLA_Dropout/pipeline/cleaned_joined_table.csv')
+# full_df.to_csv('../UCLA_Dropout/pipeline/cleaned_joined_table.csv')

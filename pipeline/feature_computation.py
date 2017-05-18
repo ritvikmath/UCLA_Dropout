@@ -184,4 +184,85 @@ def quarter_count_feature(df):
 def is_male_feature(df):
 	return df.Gender.apply(feature_helpers.get_boolean_male)
 
+def grade_in_115A_feature(df):
+	grade_list = []
+	grades_dct = {}
+	for index, row in df.iterrows(): 
+		# print row
+		if row.course == '115A' or row.course == '0115A':
+		   grades_dct[(row.ID, row.alph_term)] = row.grade
+		   grade_list.append(row.grade) 
+		else:
+		   grade_list.append(0) 
+		   grades_dct[(row.ID, row.alph_term)] = 0
+		
+	return df.apply(lambda x: grades_dct[(x.ID, x.alph_term)], axis = 'columns')
 
+def grade_in_131A_feature(df):
+	grade_list = []
+	grades_dct = {}
+	for index, row in df.iterrows(): 
+		# print row
+		if row.course == '131A' or row.course == '0131A':
+		   grades_dct[(row.ID, row.alph_term)] = row.grade
+		   grade_list.append(row.grade) 
+		else:
+		   grade_list.append(0) 
+		   grades_dct[(row.ID, row.alph_term)] = 0
+		
+	return df.apply(lambda x: grades_dct[(x.ID, x.alph_term)], axis = 'columns')
+
+def grade_in_31A_feature(df):
+	grade_list = []
+	grades_dct = {}
+	for index, row in df.iterrows(): 
+		# print row
+		if row.course == '31A' or row.course == '0031A':
+		   grades_dct[(row.ID, row.alph_term)] = row.grade
+		   grade_list.append(row.grade) 
+		else:
+		   grade_list.append(0) 
+		   grades_dct[(row.ID, row.alph_term)] = 0
+		
+	return df.apply(lambda x: grades_dct[(x.ID, x.alph_term)], axis = 'columns')
+
+def grade_in_32A_feature(df):
+	grade_list = []
+	grades_dct = {}
+	for index, row in df.iterrows(): 
+		# print row
+		if row.course == '32A' or row.course == '0032A':
+		   grades_dct[(row.ID, row.alph_term)] = row.grade
+		   grade_list.append(row.grade) 
+		else:
+		   grade_list.append(0) 
+		   grades_dct[(row.ID, row.alph_term)] = 0
+		
+	return df.apply(lambda x: grades_dct[(x.ID, x.alph_term)], axis = 'columns')
+
+def get_SAT_Math_feature(df):
+	score_list = []
+	score_dct = {}
+	for index, row in df.iterrows(): 
+		# print row.full_score
+		lst = str(row.full_score).split(',')
+		if "(u'Reading/Math/Writing'" in lst:
+			scores_index = lst.index("(u'Reading/Math/Writing'") + 2 
+			math_score = float(lst[scores_index])
+			score_dct[(row.ID, row.alph_term)] = math_score
+		elif "[(u'Reading/Math/Writing'" in lst: 
+			scores_index = lst.index("[(u'Reading/Math/Writing'") + 2 
+			math_score = float(lst[scores_index])
+			score_dct[(row.ID, row.alph_term)] = math_score
+		elif "(u'Mathematics - Level 2'" in lst: 
+			scores_index = lst.index("(u'Mathematics - Level 2'") + 1 
+			math_score = float(lst[scores_index])
+			score_dct[(row.ID, row.alph_term)] = math_score
+		elif "([u'Mathematics - Level 2'" in lst: 
+			scores_index = lst.index("([u'Mathematics - Level 2'") + 1 
+			math_score = float(lst[scores_index])
+			score_dct[(row.ID, row.alph_term)] = math_score
+		else: 
+			score_dct[(row.ID, row.alph_term)] = 0
+	return df.apply(lambda x: score_dct[(x.ID, x.alph_term)], axis = 'columns')
+# grade_in_115A_feature(pd.read_csv("cleaned_joined_table.csv"))
